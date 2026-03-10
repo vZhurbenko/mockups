@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from "vue";
-import { X, MapPin, Clock, Users, Trophy, Dumbbell } from "lucide-vue-next";
+import { X, MapPin, Clock, Users } from "lucide-vue-next";
 import { useTrainingCalendarStore } from "@/stores/trainingCalendar";
 import EventParticipants from "./EventParticipants.vue";
 
@@ -90,29 +90,8 @@ const handleKeydown = (e) => {
             class="relative bg-white rounded-lg shadow-xl max-w-lg w-full p-6"
             @click.stop
           >
-            <!-- Кнопка закрытия -->
-            <button
-              @click="handleClose"
-              class="absolute top-4 right-4 p-1 rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              <X class="w-5 h-5 text-gray-500" />
-            </button>
-
             <!-- Заголовок -->
-            <div class="flex items-start gap-4 mb-4">
-              <div
-                class="w-12 h-12 rounded-lg flex items-center justify-center shrink-0"
-                :class="isTraining ? 'bg-green-100' : 'bg-purple-100'"
-              >
-                <Dumbbell
-                  v-if="isTraining"
-                  class="w-6 h-6 text-green-600"
-                />
-                <Trophy
-                  v-else
-                  class="w-6 h-6 text-purple-600"
-                />
-              </div>
+            <div class="flex items-start justify-between gap-4 mb-4">
               <div class="flex-1">
                 <h3 class="text-lg font-semibold text-gray-900 mb-1">
                   {{ event.title }}
@@ -121,12 +100,20 @@ const handleKeydown = (e) => {
                   Соперник: <span class="font-medium">{{ event.opponent }}</span>
                 </p>
               </div>
-              <span
-                class="px-2 py-1 text-xs font-medium rounded-full shrink-0 h-fit"
-                :class="isTraining ? 'bg-green-100 text-green-700' : 'bg-purple-100 text-purple-700'"
-              >
-                {{ isTraining ? "Тренировка" : "Игра" }}
-              </span>
+              <div class="flex flex-col items-end gap-2 shrink-0">
+                <button
+                  @click="handleClose"
+                  class="p-1 rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  <X class="w-5 h-5 text-gray-500" />
+                </button>
+                <span
+                  class="px-2 py-1 text-xs font-medium rounded-full"
+                  :class="isTraining ? 'bg-green-100 text-green-700' : 'bg-purple-100 text-purple-700'"
+                >
+                  {{ isTraining ? "Тренировка" : "Игра" }}
+                </span>
+              </div>
             </div>
 
             <!-- Детали -->

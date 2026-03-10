@@ -33,7 +33,7 @@ const handleCloseModal = () => {
 </script>
 
 <template>
-  <div class="max-w-6xl mx-auto space-y-4 sm:space-y-6">
+  <div class="max-w-7xl mx-auto space-y-4 sm:space-y-6">
     <!-- Секция календаря -->
     <div>
       <h2 class="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">Календарь</h2>
