@@ -55,19 +55,19 @@ const isPastDate = (date) => {
 
 <template>
   <div>
-    <!-- Фильтр -->
-    <div class="flex items-center gap-2 mb-4">
+    <!-- Фильтр (сегментированный контроль) -->
+    <div class="inline-flex items-center bg-gray-200 rounded-lg p-1 mb-4">
       <button
         @click="filter = 'all'"
-        class="px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg transition-colors"
-        :class="filter === 'all' ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+        class="px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all"
+        :class="filter === 'all' ? 'bg-white text-gray-900 shadow' : 'text-gray-600 hover:text-gray-900'"
       >
         Все события
       </button>
       <button
         @click="filter = 'upcoming'"
-        class="px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg transition-colors"
-        :class="filter === 'upcoming' ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+        class="px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all"
+        :class="filter === 'upcoming' ? 'bg-white text-gray-900 shadow' : 'text-gray-600 hover:text-gray-900'"
       >
         Предстоящие
       </button>
