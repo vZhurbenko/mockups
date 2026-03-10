@@ -6,6 +6,7 @@ import CalendarGrid from "@/components/training-calendar/CalendarGrid.vue";
 import EventsPanel from "@/components/training-calendar/EventsPanel.vue";
 import DayModal from "@/components/training-calendar/DayModal.vue";
 import AddEventModal from "@/components/training-calendar/AddEventModal.vue";
+import { ChevronRight } from "lucide-vue-next";
 
 const store = useTrainingCalendarStore();
 
@@ -85,27 +86,38 @@ const handleCloseAddEventModal = () => {
     <!-- Секция с табами -->
     <div class="bg-white rounded shadow">
       <!-- Табы (Material-style с белым фоном активного) -->
-      <div class="flex border-b border-gray-200">
+      <div class="flex items-center border-b border-gray-200">
         <button
           @click="activeTab = 'calendar'"
-          class="px-4 py-3 text-sm font-medium transition-colors border-b-2 -mb-px"
+          class="px-4 py-3 text-sm font-medium transition-colors border-b-2 -mb-px flex items-center gap-2"
           :class="[
             activeTab === 'calendar'
               ? 'text-primary-600 border-primary-600 bg-white'
               : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300',
           ]"
         >
+          <!-- Стрелочка (видима только для активного таба) -->
+          <ChevronRight
+            class="w-4 h-4"
+            :class="activeTab === 'calendar' ? 'text-primary-600' : 'text-transparent'"
+          />
           Календарь
         </button>
+        <div class="w-px h-6 bg-gray-200 mx-2"></div>
         <button
           @click="activeTab = 'events'"
-          class="px-4 py-3 text-sm font-medium transition-colors border-b-2 -mb-px"
+          class="px-4 py-3 text-sm font-medium transition-colors border-b-2 -mb-px flex items-center gap-2"
           :class="[
             activeTab === 'events'
               ? 'text-primary-600 border-primary-600 bg-white'
               : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300',
           ]"
         >
+          <!-- Стрелочка (видима только для активного таба) -->
+          <ChevronRight
+            class="w-4 h-4"
+            :class="activeTab === 'events' ? 'text-primary-600' : 'text-transparent'"
+          />
           События месяца
         </button>
       </div>
