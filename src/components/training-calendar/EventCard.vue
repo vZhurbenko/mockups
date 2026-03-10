@@ -23,8 +23,18 @@ const isGame = computed(() => props.event.type === "game");
 
 const isParticipating = computed(() => store.isParticipating(props.event.id));
 
+const isOnWaitlist = computed(() => store.isOnWaitlist(props.event.id));
+
+const mainParticipantsCount = computed(() => {
+  return props.event.participants.filter((p) => !p.isWaitlist).length;
+});
+
+const waitlistCount = computed(() => {
+  return props.event.participants.filter((p) => p.isWaitlist).length;
+});
+
 const spotsLeft = computed(() => {
-  return props.event.maxParticipants - props.event.participants.length;
+  return props.event.maxParticipants - mainParticipantsCount.value;
 });
 
 const isFull = computed(() => spotsLeft.value <= 0);
@@ -87,11 +97,14 @@ const handleToggleParticipation = () => {
               class="flex items-center gap-1 hover:text-gray-900 transition-colors"
             >
               <span>
-                {{ event.participants.length }} / {{ event.maxParticipants }} участников
-                <span v-if="spotsLeft > 0" class="text-green-600">
+                {{ mainParticipantsCount }} / {{ event.maxParticipants }} участников
+                <span v-if="spotsLeft > 0 && !isPastDate" class="text-green-600">
                   (свободно: {{ spotsLeft }})
                 </span>
-                <span v-else class="text-red-600 font-medium">
+                <span v-else-if="waitlistCount > 0" class="text-amber-600">
+                  (в резерве: {{ waitlistCount }})
+                </span>
+                <span v-else-if="isFull && !isPastDate" class="text-red-600 font-medium">
                   (мест нет)
                 </span>
               </span>
@@ -119,17 +132,19 @@ const handleToggleParticipation = () => {
         <template v-if="!isPastDate">
           <button
             @click="handleToggleParticipation"
-            :disabled="isFull && !isParticipating"
+            :disabled="isPastDate"
             class="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap"
             :class="[
-              isParticipating
-                ? 'bg-red-50 text-red-600 hover:bg-red-100'
-                : isFull
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : 'bg-primary-600 text-white hover:bg-primary-700',
+              isPastDate
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : isOnWaitlist
+                  ? 'bg-amber-50 text-amber-600 hover:bg-amber-100'
+                  : isParticipating
+                    ? 'bg-red-50 text-red-600 hover:bg-red-100'
+                    : 'bg-primary-600 text-white hover:bg-primary-700',
             ]"
           >
-            {{ isParticipating ? "Отписаться" : "Записаться" }}
+            {{ isPastDate ? 'Завершено' : isOnWaitlist ? 'В резерве' : isParticipating ? 'Отписаться' : 'Записаться' }}
           </button>
         </template>
         <span

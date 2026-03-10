@@ -8,6 +8,9 @@ const mockParticipants = [
   { ID: 3, NAME: "Сергей", LAST_NAME: "Сидоров", PERSONAL_PHOTO_LINK: null },
   { ID: 4, NAME: "Максим", LAST_NAME: "Козлов", PERSONAL_PHOTO_LINK: null },
   { ID: 5, NAME: "Андрей", LAST_NAME: "Новиков", PERSONAL_PHOTO_LINK: null },
+  { ID: 6, NAME: "Павел", LAST_NAME: "Морозов", PERSONAL_PHOTO_LINK: null },
+  { ID: 7, NAME: "Илья", LAST_NAME: "Волков", PERSONAL_PHOTO_LINK: null },
+  { ID: 8, NAME: "Олег", LAST_NAME: "Соколов", PERSONAL_PHOTO_LINK: null },
 ];
 
 // Моковые события
@@ -20,8 +23,11 @@ const mockEvents = [
     endTime: new Date(new Date().getFullYear(), new Date().getMonth(), 5, 21, 0),
     location: "СК Олимпийский",
     address: "ул. Спортивная, 1",
-    participants: [mockParticipants[1], mockParticipants[2]], // ID: 2, 3 (без ID: 1)
-    maxParticipants: 12,
+    participants: [
+      mockParticipants[1], mockParticipants[2], // Основные
+      { ...mockParticipants[5], isWaitlist: true }, // В резерве
+    ],
+    maxParticipants: 2,
     description: "Обычная тренировка, отработка бросков",
   },
   {
@@ -205,15 +211,40 @@ export const useTrainingCalendarStore = defineStore("trainingCalendar", () => {
     const isParticipating = event.participants.some((p) => p.ID === currentUserId.value);
 
     if (isParticipating) {
-      event.participants = event.participants.filter((p) => p.ID !== currentUserId.value);
+      // Если пользователь в основных участниках - убираем его
+      const mainParticipantIndex = event.participants.findIndex(
+        (p) => p.ID === currentUserId.value && !p.isWaitlist
+      );
+      if (mainParticipantIndex !== -1) {
+        event.participants.splice(mainParticipantIndex, 1);
+      } else {
+        // Если в waitlist - убираем оттуда
+        event.participants = event.participants.filter((p) => p.ID !== currentUserId.value);
+      }
     } else {
-      if (event.participants.length < event.maxParticipants) {
+      if (event.participants.filter((p) => !p.isWaitlist).length < event.maxParticipants) {
+        // Есть место в основных
         event.participants.push({
           ID: currentUserId.value,
           NAME: "Текущий",
           LAST_NAME: "Пользователь",
           PERSONAL_PHOTO_LINK: null,
+          isWaitlist: false,
         });
+      } else {
+        // Нет места - добавляем в waitlist
+        const alreadyInWaitlist = event.participants.some(
+          (p) => p.ID === currentUserId.value && p.isWaitlist
+        );
+        if (!alreadyInWaitlist) {
+          event.participants.push({
+            ID: currentUserId.value,
+            NAME: "Текущий",
+            LAST_NAME: "Пользователь",
+            PERSONAL_PHOTO_LINK: null,
+            isWaitlist: true,
+          });
+        }
       }
     }
 
@@ -225,6 +256,20 @@ export const useTrainingCalendarStore = defineStore("trainingCalendar", () => {
     const event = events.value.find((e) => e.id === eventId);
     if (!event) return false;
     return event.participants.some((p) => p.ID === currentUserId.value);
+  }
+
+  function isOnWaitlist(eventId) {
+    const event = events.value.find((e) => e.id === eventId);
+    if (!event) return false;
+    return event.participants.some(
+      (p) => p.ID === currentUserId.value && p.isWaitlist
+    );
+  }
+
+  function getWaitlistCount(eventId) {
+    const event = events.value.find((e) => e.id === eventId);
+    if (!event) return 0;
+    return event.participants.filter((p) => p.isWaitlist).length;
   }
 
   return {
@@ -247,5 +292,7 @@ export const useTrainingCalendarStore = defineStore("trainingCalendar", () => {
     selectDate,
     toggleParticipation,
     isParticipating,
+    isOnWaitlist,
+    getWaitlistCount,
   };
 });

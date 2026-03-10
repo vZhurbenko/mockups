@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from "vue";
-import { X, MapPin, Clock, Users, Trophy, Dumbbell, Plus } from "lucide-vue-next";
+import { X, MapPin, Clock, Users, Trophy, Dumbbell, Plus, UserX } from "lucide-vue-next";
 import { useTrainingCalendarStore } from "@/stores/trainingCalendar";
 import EventParticipants from "./EventParticipants.vue";
 
@@ -47,6 +47,18 @@ const handleToggleParticipation = (eventId) => {
 
 const isParticipating = (eventId) => {
   return store.isParticipating(eventId);
+};
+
+const isOnWaitlist = (eventId) => {
+  return store.isOnWaitlist(eventId);
+};
+
+const getMainParticipants = (event) => {
+  return event.participants.filter((p) => !p.isWaitlist);
+};
+
+const getWaitlistParticipants = (event) => {
+  return event.participants.filter((p) => p.isWaitlist);
 };
 
 const handleClose = () => {
@@ -172,17 +184,19 @@ const formatTime = (dateStr) => {
                         <template v-if="!isPastDate">
                           <button
                             @click="handleToggleParticipation(event.id)"
-                            :disabled="event.participants.length >= event.maxParticipants && !isParticipating(event.id)"
+                            :disabled="isPastDate"
                             class="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap"
                             :class="[
-                              isParticipating(event.id)
-                                ? 'bg-red-50 text-red-600 hover:bg-red-100'
-                                : event.participants.length >= event.maxParticipants
-                                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                  : 'bg-primary-600 text-white hover:bg-primary-700',
+                              isPastDate
+                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                : isOnWaitlist(event.id)
+                                  ? 'bg-amber-50 text-amber-600 hover:bg-amber-100'
+                                  : isParticipating(event.id)
+                                    ? 'bg-red-50 text-red-600 hover:bg-red-100'
+                                    : 'bg-primary-600 text-white hover:bg-primary-700',
                             ]"
                           >
-                            {{ isParticipating(event.id) ? "Отписаться" : "Записаться" }}
+                            {{ isPastDate ? 'Завершено' : isOnWaitlist(event.id) ? 'В резерве' : isParticipating(event.id) ? 'Отписаться' : 'Записаться' }}
                           </button>
                         </template>
                         <span
