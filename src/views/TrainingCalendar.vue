@@ -105,9 +105,9 @@ const handleCloseAddEventModal = () => {
       </div>
     </div>
 
-    <!-- Секция событий (только mobile) -->
-    <div class="md:hidden">
-      <h2 class="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">Предстоящие события</h2>
+    <!-- Секция событий -->
+    <div>
+      <h2 class="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">Все события месяца</h2>
       <EventsPanel />
     </div>
   </div>

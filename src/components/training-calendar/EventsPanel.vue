@@ -8,12 +8,6 @@ const store = useTrainingCalendarStore();
 // Все события месяца, сгруппированные по дням
 const groupedEvents = computed(() => {
   const events = store.monthEvents
-    .filter((event) => {
-      const eventDate = new Date(event.date);
-      const now = new Date();
-      now.setHours(0, 0, 0, 0);
-      return eventDate >= now;
-    })
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
   // Группируем по датам
@@ -58,14 +52,22 @@ const isPastDate = (date) => {
       class="bg-white rounded shadow p-3 sm:p-4"
     >
       <!-- Заголовок дня -->
-      <div class="flex flex-wrap items-center gap-2 mb-3 pb-3 border-b border-gray-200">
-        <span class="text-xs sm:text-sm font-semibold text-gray-900 capitalize">
-          {{ day.date.toLocaleDateString("ru-RU", {
-            weekday: 'long',
-            day: 'numeric',
-            month: 'long',
-          }) }}
-        </span>
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-3 pb-3 border-b border-gray-200">
+        <div class="flex items-center gap-2">
+          <span class="text-xs sm:text-sm font-semibold text-gray-900 capitalize">
+            {{ day.date.toLocaleDateString("ru-RU", {
+              weekday: 'long',
+              day: 'numeric',
+              month: 'long',
+            }) }}
+          </span>
+          <span
+            v-if="isPastDate(day.date)"
+            class="px-2 py-0.5 text-[10px] sm:text-xs font-medium bg-gray-100 text-gray-600 rounded-full"
+          >
+            Завершено
+          </span>
+        </div>
         <span class="text-[10px] sm:text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full whitespace-nowrap">
           {{ day.events.length }} {{ day.events.length === 1 ? 'событие' : day.events.length < 5 ? 'события' : 'событий' }}
         </span>
