@@ -55,22 +55,33 @@ const isPastDate = (date) => {
 
 <template>
   <div>
-    <!-- Фильтр (сегментированный контроль) -->
-    <div class="inline-flex items-center bg-gray-200 rounded-lg p-1 mb-4">
-      <button
-        @click="filter = 'all'"
-        class="px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all"
-        :class="filter === 'all' ? 'bg-white text-gray-900 shadow' : 'text-gray-600 hover:text-gray-900'"
-      >
-        Все события
-      </button>
-      <button
-        @click="filter = 'upcoming'"
-        class="px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all"
-        :class="filter === 'upcoming' ? 'bg-white text-gray-900 shadow' : 'text-gray-600 hover:text-gray-900'"
-      >
-        Предстоящие
-      </button>
+    <!-- Фильтр (как в ActionButtons.vue) -->
+    <div class="flex items-center gap-2 mb-4">
+      <span class="text-base font-semibold text-gray-700">Показать:</span>
+      <div class="flex gap-1.5 flex-wrap">
+        <button
+          @click="filter = 'all'"
+          class="px-3 py-1 text-sm rounded border transition-colors"
+          :class="[
+            filter === 'all'
+              ? 'bg-primary-50 border-primary-200 text-primary-600'
+              : 'bg-white border-gray-300 text-gray-600 hover:border-gray-400',
+          ]"
+        >
+          Все события
+        </button>
+        <button
+          @click="filter = 'upcoming'"
+          class="px-3 py-1 text-sm rounded border transition-colors"
+          :class="[
+            filter === 'upcoming'
+              ? 'bg-primary-50 border-primary-200 text-primary-600'
+              : 'bg-white border-gray-300 text-gray-600 hover:border-gray-400',
+          ]"
+        >
+          Предстоящие
+        </button>
+      </div>
     </div>
 
     <div class="space-y-3 sm:space-y-4">
