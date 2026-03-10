@@ -83,27 +83,27 @@ const handleCloseAddEventModal = () => {
 <template>
   <div class="max-w-7xl mx-auto space-y-6">
     <!-- Секция с табами -->
-    <div class="bg-white rounded shadow">
-      <!-- Табы -->
-      <div class="flex border-b border-gray-200">
+    <div class="bg-white rounded shadow p-3 sm:p-6">
+      <!-- Табы (Segmented Control / iOS-style) -->
+      <div class="inline-flex items-center bg-gray-200 rounded-lg p-1 mb-4">
         <button
           @click="activeTab = 'calendar'"
-          class="flex-1 px-4 py-3 text-sm font-medium transition-colors"
+          class="flex-1 px-4 py-2 text-sm font-medium rounded-md transition-all"
           :class="[
             activeTab === 'calendar'
-              ? 'text-primary-600 border-b-2 border-primary-600 bg-primary-50'
-              : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
+              ? 'bg-white text-gray-900 shadow'
+              : 'text-gray-600 hover:text-gray-900',
           ]"
         >
           Календарь
         </button>
         <button
           @click="activeTab = 'events'"
-          class="flex-1 px-4 py-3 text-sm font-medium transition-colors"
+          class="flex-1 px-4 py-2 text-sm font-medium rounded-md transition-all"
           :class="[
             activeTab === 'events'
-              ? 'text-primary-600 border-b-2 border-primary-600 bg-primary-50'
-              : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
+              ? 'bg-white text-gray-900 shadow'
+              : 'text-gray-600 hover:text-gray-900',
           ]"
         >
           События месяца
@@ -111,7 +111,7 @@ const handleCloseAddEventModal = () => {
       </div>
 
       <!-- Контент табов -->
-      <div class="p-3 sm:p-6">
+      <div>
         <!-- Tab: Календарь -->
         <div v-if="activeTab === 'calendar'">
           <CalendarHeader :month-name="monthName" />
