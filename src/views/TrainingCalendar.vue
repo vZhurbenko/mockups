@@ -12,6 +12,7 @@ const store = useTrainingCalendarStore();
 const selectedDate = ref(null);
 const isDayModalOpen = ref(false);
 const isAddEventModalOpen = ref(false);
+const activeTab = ref("calendar"); // 'calendar' или 'events'
 
 const monthName = computed(() => {
   return new Intl.DateTimeFormat("ru-RU", { month: "long", year: "numeric" }).format(
@@ -80,35 +81,50 @@ const handleCloseAddEventModal = () => {
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto space-y-4 sm:space-y-6">
-    <!-- Секция календаря -->
-    <div>
-      <div class="flex items-center justify-between mb-3 sm:mb-4">
-        <h2 class="text-lg sm:text-xl font-semibold text-gray-900">Календарь</h2>
-        <!-- Легенда -->
-        <div class="flex items-center gap-3 sm:gap-4">
-          <div class="flex items-center gap-1.5 sm:gap-2">
-            <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500" />
-            <span class="text-xs sm:text-sm text-gray-600">Тренировка</span>
-          </div>
-          <div class="flex items-center gap-1.5 sm:gap-2">
-            <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-purple-500" />
-            <span class="text-xs sm:text-sm text-gray-600">Игра</span>
-          </div>
+  <div class="max-w-7xl mx-auto space-y-6">
+    <!-- Секция с табами -->
+    <div class="bg-white rounded shadow">
+      <!-- Табы -->
+      <div class="flex border-b border-gray-200">
+        <button
+          @click="activeTab = 'calendar'"
+          class="flex-1 px-4 py-3 text-sm font-medium transition-colors"
+          :class="[
+            activeTab === 'calendar'
+              ? 'text-primary-600 border-b-2 border-primary-600 bg-primary-50'
+              : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
+          ]"
+        >
+          Календарь
+        </button>
+        <button
+          @click="activeTab = 'events'"
+          class="flex-1 px-4 py-3 text-sm font-medium transition-colors"
+          :class="[
+            activeTab === 'events'
+              ? 'text-primary-600 border-b-2 border-primary-600 bg-primary-50'
+              : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
+          ]"
+        >
+          События месяца
+        </button>
+      </div>
+
+      <!-- Контент табов -->
+      <div class="p-3 sm:p-6">
+        <!-- Tab: Календарь -->
+        <div v-if="activeTab === 'calendar'">
+          <CalendarHeader :month-name="monthName" />
+          <CalendarGrid
+            @day-click="handleDayClick"
+          />
+        </div>
+
+        <!-- Tab: События месяца -->
+        <div v-if="activeTab === 'events'">
+          <EventsPanel />
         </div>
       </div>
-      <div class="bg-white rounded shadow p-3 sm:p-6">
-        <CalendarHeader :month-name="monthName" />
-        <CalendarGrid
-          @day-click="handleDayClick"
-        />
-      </div>
-    </div>
-
-    <!-- Секция событий -->
-    <div>
-      <h2 class="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">Все события месяца</h2>
-      <EventsPanel />
     </div>
   </div>
 
