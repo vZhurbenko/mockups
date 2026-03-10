@@ -84,26 +84,26 @@ const handleCloseAddEventModal = () => {
   <div class="max-w-7xl mx-auto space-y-6">
     <!-- Секция с табами -->
     <div class="bg-white rounded shadow">
-      <!-- Табы -->
+      <!-- Табы (Material-style с белым фоном активного) -->
       <div class="flex border-b border-gray-200">
         <button
           @click="activeTab = 'calendar'"
-          class="flex-1 px-4 py-3 text-sm font-medium transition-colors"
+          class="px-4 py-3 text-sm font-medium transition-colors border-b-2 -mb-px"
           :class="[
             activeTab === 'calendar'
-              ? 'text-primary-700 border-b-2 border-primary-600 bg-primary-100'
-              : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
+              ? 'text-primary-600 border-primary-600 bg-white'
+              : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300',
           ]"
         >
           Календарь
         </button>
         <button
           @click="activeTab = 'events'"
-          class="flex-1 px-4 py-3 text-sm font-medium transition-colors"
+          class="px-4 py-3 text-sm font-medium transition-colors border-b-2 -mb-px"
           :class="[
             activeTab === 'events'
-              ? 'text-primary-700 border-b-2 border-primary-600 bg-primary-100'
-              : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
+              ? 'text-primary-600 border-primary-600 bg-white'
+              : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300',
           ]"
         >
           События месяца
