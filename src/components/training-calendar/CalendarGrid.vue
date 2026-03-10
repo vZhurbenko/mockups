@@ -3,7 +3,7 @@ import { computed } from "vue";
 import { useTrainingCalendarStore } from "@/stores/trainingCalendar";
 import CalendarDay from "./CalendarDay.vue";
 
-const emit = defineEmits(["day-click", "event-click"]);
+const emit = defineEmits(["day-click"]);
 
 const store = useTrainingCalendarStore();
 
@@ -62,10 +62,6 @@ const calendarDays = computed(() => {
 const handleDayClick = (date) => {
   emit("day-click", date);
 };
-
-const handleEventClick = (event) => {
-  emit("event-click", event);
-};
 </script>
 
 <template>
@@ -92,7 +88,6 @@ const handleEventClick = (event) => {
         :year="day.year"
         :is-current-month="day.isCurrentMonth"
         @day-click="handleDayClick"
-        @event-click="handleEventClick"
       />
     </div>
   </div>

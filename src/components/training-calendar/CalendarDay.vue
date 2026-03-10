@@ -21,7 +21,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["day-click", "event-click"]);
+const emit = defineEmits(["day-click"]);
 
 const store = useTrainingCalendarStore();
 
@@ -71,11 +71,6 @@ const handleDayClick = () => {
   emit("day-click", date.value);
 };
 
-const handleEventClick = (event, $event) => {
-  $event.stopPropagation();
-  emit("event-click", event);
-};
-
 const formatTime = (dateStr) => {
   const date = new Date(dateStr);
   return date.toLocaleTimeString("ru-RU", {
@@ -105,8 +100,7 @@ const formatTime = (dateStr) => {
       <div
         v-for="event in dayEvents.slice(0, 2)"
         :key="event.id"
-        @click="(e) => handleEventClick(event, e)"
-        class="text-[9px] truncate px-1 rounded cursor-pointer hover:opacity-80"
+        class="text-[9px] truncate px-1 rounded"
         :class="event.type === 'training' ? 'bg-green-100 text-green-700' : 'bg-purple-100 text-purple-700'"
       >
         {{ formatTime(event.date) }} {{ event.title }}

@@ -106,7 +106,7 @@ const formatTime = (dateStr) => {
                   class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-primary-600 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors"
                 >
                   <Plus class="w-4 h-4" />
-                  Добавить
+                  Добавить событие
                 </button>
                 <button
                   @click="handleClose"
