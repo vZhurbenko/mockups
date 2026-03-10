@@ -116,22 +116,28 @@ const handleToggleParticipation = () => {
         >
           {{ isTraining ? "Тренировка" : "Игра" }}
         </span>
-        <button
-          @click="handleToggleParticipation"
-          :disabled="isPastDate || (isFull && !isParticipating)"
-          class="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap"
-          :class="[
-            isPastDate
-              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-              : isParticipating
+        <template v-if="!isPastDate">
+          <button
+            @click="handleToggleParticipation"
+            :disabled="isFull && !isParticipating"
+            class="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap"
+            :class="[
+              isParticipating
                 ? 'bg-red-50 text-red-600 hover:bg-red-100'
                 : isFull
                   ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                   : 'bg-primary-600 text-white hover:bg-primary-700',
-          ]"
+            ]"
+          >
+            {{ isParticipating ? "Отписаться" : "Записаться" }}
+          </button>
+        </template>
+        <span
+          v-else
+          class="px-3 py-1.5 text-xs font-medium text-gray-500"
         >
-          {{ isPastDate ? 'Завершено' : isParticipating ? "Отписаться" : "Записаться" }}
-        </button>
+          Завершено
+        </span>
       </div>
     </div>
 

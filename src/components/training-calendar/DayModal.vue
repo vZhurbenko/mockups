@@ -154,22 +154,28 @@ const formatTime = (dateStr) => {
                         >
                           {{ event.type === 'training' ? "Тренировка" : "Игра" }}
                         </span>
-                        <button
-                          @click="handleToggleParticipation(event.id)"
-                          :disabled="isPastDate || (event.participants.length >= event.maxParticipants && !isParticipating(event.id))"
-                          class="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap"
-                          :class="[
-                            isPastDate
-                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                              : isParticipating(event.id)
+                        <template v-if="!isPastDate">
+                          <button
+                            @click="handleToggleParticipation(event.id)"
+                            :disabled="event.participants.length >= event.maxParticipants && !isParticipating(event.id)"
+                            class="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap"
+                            :class="[
+                              isParticipating(event.id)
                                 ? 'bg-red-50 text-red-600 hover:bg-red-100'
                                 : event.participants.length >= event.maxParticipants
                                   ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                                   : 'bg-primary-600 text-white hover:bg-primary-700',
-                          ]"
+                            ]"
+                          >
+                            {{ isParticipating(event.id) ? "Отписаться" : "Записаться" }}
+                          </button>
+                        </template>
+                        <span
+                          v-else
+                          class="px-3 py-1.5 text-xs font-medium text-gray-500"
                         >
-                          {{ isPastDate ? 'Завершено' : isParticipating(event.id) ? "Отписаться" : "Записаться" }}
-                        </button>
+                          Завершено
+                        </span>
                       </div>
                     </div>
                   </div>
