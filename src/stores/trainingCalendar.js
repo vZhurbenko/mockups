@@ -20,9 +20,21 @@ const mockEvents = [
     endTime: new Date(new Date().getFullYear(), new Date().getMonth(), 5, 21, 0),
     location: "СК Олимпийский",
     address: "ул. Спортивная, 1",
-    participants: [mockParticipants[0], mockParticipants[1], mockParticipants[2]],
+    participants: [mockParticipants[1], mockParticipants[2]], // ID: 2, 3 (без ID: 1)
     maxParticipants: 12,
     description: "Обычная тренировка, отработка бросков",
+  },
+  {
+    id: 8,
+    type: "training",
+    title: "Тренировка по футболу",
+    date: new Date(new Date().getFullYear(), new Date().getMonth(), 5, 17, 0),
+    endTime: new Date(new Date().getFullYear(), new Date().getMonth(), 5, 18, 30),
+    location: "Поле №3",
+    address: "ул. Спортивная, 3",
+    participants: [mockParticipants[3]], // ID: 4
+    maxParticipants: 16,
+    description: "Тактическая подготовка",
   },
   {
     id: 2,
@@ -33,9 +45,21 @@ const mockEvents = [
     location: "Стадион Динамо",
     address: "пр. Ленина, 45",
     opponent: "Eagles BC",
-    participants: [mockParticipants[0], mockParticipants[1], mockParticipants[2], mockParticipants[3]],
+    participants: [mockParticipants[1], mockParticipants[2], mockParticipants[3]], // ID: 2, 3, 4
     maxParticipants: 10,
     description: "Товарищеский матч",
+  },
+  {
+    id: 9,
+    type: "training",
+    title: "Тренировка вратарей",
+    date: new Date(new Date().getFullYear(), new Date().getMonth(), 8, 10, 0),
+    endTime: new Date(new Date().getFullYear(), new Date().getMonth(), 8, 12, 0),
+    location: "Стадион Динамо",
+    address: "пр. Ленина, 45",
+    participants: [], // Пусто
+    maxParticipants: 6,
+    description: "Специализированная тренировка для вратарей",
   },
   {
     id: 3,
@@ -45,7 +69,7 @@ const mockEvents = [
     endTime: new Date(new Date().getFullYear(), new Date().getMonth(), 12, 20, 30),
     location: "Поле №5",
     address: "ул. Зеленая, 10",
-    participants: [mockParticipants[3], mockParticipants[4]],
+    participants: [], // Пусто - можно записаться
     maxParticipants: 16,
     description: "Тактическая подготовка",
   },
@@ -58,9 +82,21 @@ const mockEvents = [
     location: "Арена 2000",
     address: "ул. Мира, 100",
     opponent: "Tigers United",
-    participants: [mockParticipants[0]],
+    participants: [mockParticipants[0]], // ID: 1 - уже записан
     maxParticipants: 10,
     description: "Выездная игра",
+  },
+  {
+    id: 10,
+    type: "training",
+    title: "ОФП и растяжка",
+    date: new Date(new Date().getFullYear(), new Date().getMonth(), 15, 9, 0),
+    endTime: new Date(new Date().getFullYear(), new Date().getMonth(), 15, 10, 30),
+    location: "Зал №2",
+    address: "ул. Мира, 100",
+    participants: [mockParticipants[2]], // ID: 3
+    maxParticipants: 10,
+    description: "Общая физическая подготовка",
   },
   {
     id: 5,
@@ -70,7 +106,7 @@ const mockEvents = [
     endTime: new Date(new Date().getFullYear(), new Date().getMonth(), 20, 21, 30),
     location: "СК Олимпийский",
     address: "ул. Спортивная, 1",
-    participants: [],
+    participants: [], // Пусто - можно записаться
     maxParticipants: 14,
     description: "Подготовка к сезону",
   },
@@ -83,7 +119,7 @@ const mockEvents = [
     location: "Стадион Динамо",
     address: "пр. Ленина, 45",
     opponent: "Bears FC",
-    participants: [mockParticipants[0], mockParticipants[1], mockParticipants[2], mockParticipants[3], mockParticipants[4]],
+    participants: [mockParticipants[1], mockParticipants[2], mockParticipants[3], mockParticipants[4]], // Без ID: 1
     maxParticipants: 10,
     description: "Домашняя игра",
   },
@@ -95,7 +131,7 @@ const mockEvents = [
     endTime: new Date(new Date().getFullYear(), new Date().getMonth(), 28, 21, 0),
     location: "СК Олимпийский",
     address: "ул. Спортивная, 1",
-    participants: [mockParticipants[0], mockParticipants[1]],
+    participants: [mockParticipants[1]], // ID: 2 (без ID: 1)
     maxParticipants: 12,
     description: "Работа в защите",
   },
@@ -162,9 +198,10 @@ export const useTrainingCalendarStore = defineStore("trainingCalendar", () => {
   }
 
   function toggleParticipation(eventId) {
-    const event = events.value.find((e) => e.id === eventId);
-    if (!event) return;
+    const eventIndex = events.value.findIndex((e) => e.id === eventId);
+    if (eventIndex === -1) return;
 
+    const event = events.value[eventIndex];
     const isParticipating = event.participants.some((p) => p.ID === currentUserId.value);
 
     if (isParticipating) {
@@ -179,6 +216,9 @@ export const useTrainingCalendarStore = defineStore("trainingCalendar", () => {
         });
       }
     }
+
+    // Обновляем массив событий для триггера реактивности
+    events.value = [...events.value];
   }
 
   function isParticipating(eventId) {

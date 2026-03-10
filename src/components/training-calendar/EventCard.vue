@@ -1,7 +1,7 @@
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useTrainingCalendarStore } from "@/stores/trainingCalendar";
-import { MapPin, Clock, Users, ChevronDown, ChevronUp, Trophy, Dumbbell } from "lucide-vue-next";
+import { MapPin, Clock, Users, ChevronDown, ChevronRight } from "lucide-vue-next";
 import EventParticipants from "./EventParticipants.vue";
 
 const props = defineProps({
@@ -12,8 +12,6 @@ const props = defineProps({
 });
 
 const store = useTrainingCalendarStore();
-
-const isExpanded = computed(() => false);
 
 const isTraining = computed(() => props.event.type === "training");
 
@@ -26,6 +24,8 @@ const spotsLeft = computed(() => {
 });
 
 const isFull = computed(() => spotsLeft.value <= 0);
+
+const isExpanded = ref(false);
 
 const dateTime = computed(() => {
   const start = new Date(props.event.date);
@@ -55,44 +55,19 @@ const handleToggleParticipation = () => {
 </script>
 
 <template>
-  <div class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-    <div class="flex items-start gap-4">
-      <!-- Иконка типа события -->
-      <div
-        class="w-12 h-12 rounded-lg flex items-center justify-center shrink-0"
-        :class="isTraining ? 'bg-green-100' : 'bg-purple-100'"
-      >
-        <Dumbbell
-          v-if="isTraining"
-          class="w-6 h-6 text-green-600"
-        />
-        <Trophy
-          v-else
-          class="w-6 h-6 text-purple-600"
-        />
-      </div>
-
-      <!-- Основная информация -->
-      <div class="flex-1 min-w-0">
-        <div class="flex items-start justify-between gap-4">
-          <div>
-            <h4 class="font-semibold text-gray-900 mb-1">
-              {{ event.title }}
-            </h4>
-            <p v-if="isGame && event.opponent" class="text-sm text-gray-600 mb-2">
-              Соперник: <span class="font-medium">{{ event.opponent }}</span>
-            </p>
-          </div>
-          <span
-            class="px-2 py-1 text-xs font-medium rounded-full shrink-0"
-            :class="isTraining ? 'bg-green-100 text-green-700' : 'bg-purple-100 text-purple-700'"
-          >
-            {{ isTraining ? "Тренировка" : "Игра" }}
-          </span>
-        </div>
+  <div class="p-4">
+    <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3">
+      <!-- Левая колонка: заголовок + информация -->
+      <div class="min-w-0">
+        <h4 class="font-semibold text-gray-900 mb-2">
+          {{ event.title }}
+        </h4>
+        <p v-if="isGame && event.opponent" class="text-sm text-gray-600 mb-2">
+          Соперник: <span class="font-medium">{{ event.opponent }}</span>
+        </p>
 
         <!-- Детали -->
-        <div class="mt-3 space-y-2">
+        <div class="space-y-1.5">
           <div class="flex items-center gap-2 text-sm text-gray-600">
             <Clock class="w-4 h-4" />
             <span>{{ dateTime.time }}</span>
@@ -103,39 +78,58 @@ const handleToggleParticipation = () => {
           </div>
           <div class="flex items-center gap-2 text-sm text-gray-600">
             <Users class="w-4 h-4" />
-            <span>
-              {{ event.participants.length }} / {{ event.maxParticipants }} участников
-              <span v-if="spotsLeft > 0" class="text-green-600">
-                (свободно: {{ spotsLeft }})
+            <button
+              @click="isExpanded = !isExpanded"
+              class="flex items-center gap-1 hover:text-gray-900 transition-colors"
+            >
+              <span>
+                {{ event.participants.length }} / {{ event.maxParticipants }} участников
+                <span v-if="spotsLeft > 0" class="text-green-600">
+                  (свободно: {{ spotsLeft }})
+                </span>
+                <span v-else class="text-red-600 font-medium">
+                  (мест нет)
+                </span>
               </span>
-              <span v-else class="text-red-600 font-medium">
-                (мест нет)
-              </span>
-            </span>
+              <ChevronDown
+                v-if="isExpanded"
+                class="w-4 h-4"
+              />
+              <ChevronRight
+                v-else
+                class="w-4 h-4"
+              />
+            </button>
           </div>
         </div>
+      </div>
 
-        <!-- Кнопка записи -->
-        <div class="mt-4 flex items-center gap-3">
-          <button
-            @click="handleToggleParticipation"
-            :disabled="isFull && !isParticipating"
-            class="px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
-            :class="[
-              isParticipating
-                ? 'bg-red-50 text-red-600 hover:bg-red-100'
-                : isFull
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : 'bg-primary-600 text-white hover:bg-primary-700',
-            ]"
-          >
-            {{ isParticipating ? "Отписаться" : "Записаться" }}
-          </button>
-        </div>
+      <!-- Правая колонка: бейдж + кнопка -->
+      <div class="flex md:flex-col items-center md:items-end gap-2 shrink-0 justify-between md:justify-start">
+        <span
+          class="px-2 py-1 text-xs font-medium rounded-full"
+          :class="isTraining ? 'bg-green-100 text-green-700' : 'bg-purple-100 text-purple-700'"
+        >
+          {{ isTraining ? "Тренировка" : "Игра" }}
+        </span>
+        <button
+          @click="handleToggleParticipation"
+          :disabled="isFull && !isParticipating"
+          class="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap"
+          :class="[
+            isParticipating
+              ? 'bg-red-50 text-red-600 hover:bg-red-100'
+              : isFull
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : 'bg-primary-600 text-white hover:bg-primary-700',
+          ]"
+        >
+          {{ isParticipating ? "Отписаться" : "Записаться" }}
+        </button>
       </div>
     </div>
 
     <!-- Участники -->
-    <EventParticipants :event="event" />
+    <EventParticipants :event="event" :is-expanded="isExpanded" />
   </div>
 </template>

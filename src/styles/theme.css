@@ -1,0 +1,17 @@
+/**
+ * Цветовая палитра проекта
+ * Синяя тема (на основе #025EA1)
+ */
+
+@theme inline {
+  --color-primary-50: #f0f7fb;
+  --color-primary-100: #cce4f5;
+  --color-primary-200: #99c8e3;
+  --color-primary-300: #66add1;
+  --color-primary-400: #2d94d4;
+  --color-primary-500: #025ea1;
+  --color-primary-600: #024a80;
+  --color-primary-700: #01365c;
+  --color-primary-800: #012338;
+  --color-primary-900: #00101a;
+}

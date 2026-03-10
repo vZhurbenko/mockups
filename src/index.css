@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+/* Цветовая палитра проекта (синяя тема) */
+@import "./styles/theme.css";
+
+/* Кастомный цвет для чекбоксов и радио-кнопок */
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--color-primary-600);
+}

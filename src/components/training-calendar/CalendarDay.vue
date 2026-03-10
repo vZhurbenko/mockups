@@ -21,6 +21,8 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(["day-click", "event-click"]);
+
 const store = useTrainingCalendarStore();
 
 const date = computed(() => new Date(props.year, props.month, props.day));
@@ -66,14 +68,27 @@ const hasGame = computed(() => {
 });
 
 const handleDayClick = () => {
-  store.selectDate(date.value);
+  emit("day-click", date.value);
+};
+
+const handleEventClick = (event, $event) => {
+  $event.stopPropagation();
+  emit("event-click", event);
+};
+
+const formatTime = (dateStr) => {
+  const date = new Date(dateStr);
+  return date.toLocaleTimeString("ru-RU", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 };
 </script>
 
 <template>
   <button
     @click="handleDayClick"
-    class="relative min-h-[80px] p-2 rounded-lg transition-all hover:bg-slate-100 text-left"
+    class="relative min-h-[70px] sm:min-h-[80px] p-1.5 sm:p-2 rounded-lg transition-all hover:bg-slate-100 text-left"
     :class="[
       !isCurrentMonth && 'text-gray-400',
       isCurrentMonth && !isToday && !isSelected && 'text-gray-900',
@@ -83,26 +98,45 @@ const handleDayClick = () => {
     ]"
   >
     <!-- Число -->
-    <span class="text-sm" :class="isToday ? 'text-base' : ''">{{ day }}</span>
+    <span class="text-xs sm:text-sm" :class="isToday ? 'text-sm sm:text-base' : ''">{{ day }}</span>
 
-    <!-- Индикаторы событий -->
-    <div v-if="dayEvents.length > 0" class="absolute bottom-2 left-2 flex gap-1">
+    <!-- Desktop: краткие события -->
+    <div v-if="dayEvents.length > 0" class="hidden md:block mt-1 space-y-0.5">
+      <div
+        v-for="event in dayEvents.slice(0, 2)"
+        :key="event.id"
+        @click="(e) => handleEventClick(event, e)"
+        class="text-[9px] truncate px-1 rounded cursor-pointer hover:opacity-80"
+        :class="event.type === 'training' ? 'bg-green-100 text-green-700' : 'bg-purple-100 text-purple-700'"
+      >
+        {{ formatTime(event.date) }} {{ event.title }}
+      </div>
+      <div
+        v-if="dayEvents.length > 2"
+        class="text-[9px] text-gray-500 truncate px-1"
+      >
+        +{{ dayEvents.length - 2 }} ещё
+      </div>
+    </div>
+
+    <!-- Mobile: индикаторы событий -->
+    <div v-else-if="dayEvents.length > 0" class="absolute bottom-1.5 sm:bottom-2 left-1.5 sm:left-2 flex gap-0.5 sm:gap-1">
       <span
         v-if="hasTraining"
-        class="w-2 h-2 rounded-full bg-green-500"
+        class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-green-500"
         title="Тренировка"
       />
       <span
         v-if="hasGame"
-        class="w-2 h-2 rounded-full bg-purple-500"
+        class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-purple-500"
         title="Игра"
       />
     </div>
 
-    <!-- Счётчик событий -->
+    <!-- Mobile: Счётчик событий -->
     <span
       v-if="dayEvents.length > 2"
-      class="absolute bottom-2 right-2 text-xs text-gray-500"
+      class="md:hidden absolute bottom-1.5 sm:bottom-2 right-1.5 sm:right-2 text-[10px] sm:text-xs text-gray-500"
     >
       +{{ dayEvents.length }}
     </span>

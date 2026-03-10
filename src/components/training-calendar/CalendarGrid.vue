@@ -3,6 +3,8 @@ import { computed } from "vue";
 import { useTrainingCalendarStore } from "@/stores/trainingCalendar";
 import CalendarDay from "./CalendarDay.vue";
 
+const emit = defineEmits(["day-click", "event-click"]);
+
 const store = useTrainingCalendarStore();
 
 const weekDays = computed(() => {
@@ -56,16 +58,24 @@ const calendarDays = computed(() => {
 
   return days;
 });
+
+const handleDayClick = (date) => {
+  emit("day-click", date);
+};
+
+const handleEventClick = (event) => {
+  emit("event-click", event);
+};
 </script>
 
 <template>
   <div class="mb-6">
     <!-- Дни недели -->
-    <div class="grid grid-cols-7 gap-1 mb-2">
+    <div class="grid grid-cols-7 gap-0.5 sm:gap-1 mb-1 sm:mb-2">
       <div
         v-for="day in weekDays"
         :key="day"
-        class="text-center text-sm font-medium py-2"
+        class="text-center text-[10px] sm:text-sm font-medium py-1 sm:py-2"
         :class="day === 'Сб' || day === 'Вс' ? 'text-red-600' : 'text-gray-600'"
       >
         {{ day }}
@@ -73,7 +83,7 @@ const calendarDays = computed(() => {
     </div>
 
     <!-- Дни месяца -->
-    <div class="grid grid-cols-7 gap-1">
+    <div class="grid grid-cols-7 gap-0.5 sm:gap-1">
       <CalendarDay
         v-for="(day, index) in calendarDays"
         :key="index"
@@ -81,6 +91,8 @@ const calendarDays = computed(() => {
         :month="day.month"
         :year="day.year"
         :is-current-month="day.isCurrentMonth"
+        @day-click="handleDayClick"
+        @event-click="handleEventClick"
       />
     </div>
   </div>

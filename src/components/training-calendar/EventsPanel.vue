@@ -1,64 +1,79 @@
 <script setup>
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { useTrainingCalendarStore } from "@/stores/trainingCalendar";
 import EventCard from "./EventCard.vue";
 
 const store = useTrainingCalendarStore();
 
-const showAll = ref(false);
+// Все события месяца, сгруппированные по дням
+const groupedEvents = computed(() => {
+  const events = store.monthEvents
+    .filter((event) => {
+      const eventDate = new Date(event.date);
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+      return eventDate >= now;
+    })
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-const eventsToShow = computed(() => {
-  const events = store.selectedDateEvents.length > 0
-    ? store.selectedDateEvents
-    : store.upcomingEvents;
+  // Группируем по датам
+  const grouped = {};
+  events.forEach((event) => {
+    const date = new Date(event.date);
+    const dateKey = date.toISOString().split('T')[0];
+    
+    if (!grouped[dateKey]) {
+      grouped[dateKey] = {
+        date: date,
+        events: [],
+      };
+    }
+    grouped[dateKey].events.push(event);
+  });
 
-  if (showAll.value || events.length <= 3) {
-    return events;
-  }
-  return events.slice(0, 3);
-});
-
-const title = computed(() => {
-  if (store.selectedDateEvents.length > 0) {
-    const dateStr = store.selectedDate.toLocaleDateString("ru-RU", {
-      day: "numeric",
-      month: "long",
-    });
-    return `События на ${dateStr}`;
-  }
-  return "Предстоящие события";
-});
-
-const hasMore = computed(() => {
-  const events = store.selectedDateEvents.length > 0
-    ? store.selectedDateEvents
-    : store.upcomingEvents;
-  return events.length > 3;
+  // Преобразуем в массив и сортируем по дате
+  return Object.values(grouped).sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
 });
 </script>
 
 <template>
-  <div class="border-t border-gray-200 pt-4">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ title }}</h3>
-
-    <div v-if="eventsToShow.length === 0" class="text-center py-8 text-gray-500">
-      <p>На этот день событий нет</p>
+  <div class="space-y-3 sm:space-y-4">
+    <div v-if="groupedEvents.length === 0" class="text-center py-8 text-gray-500">
+      <p>В этом месяце событий нет</p>
     </div>
 
-    <div class="space-y-3">
-      <EventCard
-        v-for="event in eventsToShow"
-        :key="event.id"
-        :event="event"
-      />
-    </div>
-
-    <button
-      v-if="hasMore"
-      @click="showAll = !showAll"
-      class="mt-4 w-full py-2 text-sm font-medium text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+    <div
+      v-for="day in groupedEvents"
+      :key="day.date.toISOString()"
+      class="bg-white rounded shadow p-3 sm:p-4"
     >
-      {{ showAll ? "Свернуть" : "Показать ещё" }}
-    </button>
+      <!-- Заголовок дня -->
+      <div class="flex flex-wrap items-center gap-2 mb-3 pb-3 border-b border-gray-200">
+        <span class="text-xs sm:text-sm font-semibold text-gray-900 capitalize">
+          {{ day.date.toLocaleDateString("ru-RU", {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+          }) }}
+        </span>
+        <span class="text-[10px] sm:text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full whitespace-nowrap">
+          {{ day.events.length }} {{ day.events.length === 1 ? 'событие' : day.events.length < 5 ? 'события' : 'событий' }}
+        </span>
+      </div>
+
+      <!-- События дня -->
+      <div class="space-y-2 sm:space-y-3">
+        <template v-for="(event, index) in day.events" :key="event.id">
+          <EventCard :event="event" />
+          <!-- Разделитель между событиями -->
+          <div
+            v-if="index < day.events.length - 1"
+            class="my-2 sm:my-3 border-t border-gray-100"
+          />
+        </template>
+      </div>
+    </div>
   </div>
 </template>
