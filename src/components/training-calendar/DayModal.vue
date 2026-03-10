@@ -33,6 +33,14 @@ const formattedDate = computed(() => {
   });
 });
 
+const isPastDate = computed(() => {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const eventDate = new Date(props.date);
+  eventDate.setHours(0, 0, 0, 0);
+  return eventDate < now;
+});
+
 const handleToggleParticipation = (eventId) => {
   store.toggleParticipation(eventId);
 };
@@ -148,17 +156,19 @@ const formatTime = (dateStr) => {
                         </span>
                         <button
                           @click="handleToggleParticipation(event.id)"
-                          :disabled="event.participants.length >= event.maxParticipants && !isParticipating(event.id)"
+                          :disabled="isPastDate || (event.participants.length >= event.maxParticipants && !isParticipating(event.id))"
                           class="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap"
                           :class="[
-                            isParticipating(event.id)
-                              ? 'bg-red-50 text-red-600 hover:bg-red-100'
-                              : event.participants.length >= event.maxParticipants
-                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                : 'bg-primary-600 text-white hover:bg-primary-700',
+                            isPastDate
+                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                              : isParticipating(event.id)
+                                ? 'bg-red-50 text-red-600 hover:bg-red-100'
+                                : event.participants.length >= event.maxParticipants
+                                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                  : 'bg-primary-600 text-white hover:bg-primary-700',
                           ]"
                         >
-                          {{ isParticipating(event.id) ? "Отписаться" : "Записаться" }}
+                          {{ isPastDate ? 'Завершено' : isParticipating(event.id) ? "Отписаться" : "Записаться" }}
                         </button>
                       </div>
                     </div>

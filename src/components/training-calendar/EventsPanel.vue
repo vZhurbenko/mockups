@@ -36,6 +36,14 @@ const groupedEvents = computed(() => {
     (a, b) => new Date(a.date) - new Date(b.date)
   );
 });
+
+const isPastDate = (date) => {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const eventDate = new Date(date);
+  eventDate.setHours(0, 0, 0, 0);
+  return eventDate < now;
+};
 </script>
 
 <template>
@@ -66,7 +74,7 @@ const groupedEvents = computed(() => {
       <!-- События дня -->
       <div class="space-y-2 sm:space-y-3">
         <template v-for="(event, index) in day.events" :key="event.id">
-          <EventCard :event="event" />
+          <EventCard :event="event" :is-past-date="isPastDate(day.date)" />
           <!-- Разделитель между событиями -->
           <div
             v-if="index < day.events.length - 1"

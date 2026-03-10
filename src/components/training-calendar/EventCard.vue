@@ -9,6 +9,10 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  isPastDate: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const store = useTrainingCalendarStore();
@@ -114,17 +118,19 @@ const handleToggleParticipation = () => {
         </span>
         <button
           @click="handleToggleParticipation"
-          :disabled="isFull && !isParticipating"
+          :disabled="isPastDate || (isFull && !isParticipating)"
           class="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap"
           :class="[
-            isParticipating
-              ? 'bg-red-50 text-red-600 hover:bg-red-100'
-              : isFull
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : 'bg-primary-600 text-white hover:bg-primary-700',
+            isPastDate
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              : isParticipating
+                ? 'bg-red-50 text-red-600 hover:bg-red-100'
+                : isFull
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'bg-primary-600 text-white hover:bg-primary-700',
           ]"
         >
-          {{ isParticipating ? "Отписаться" : "Записаться" }}
+          {{ isPastDate ? 'Завершено' : isParticipating ? "Отписаться" : "Записаться" }}
         </button>
       </div>
     </div>
