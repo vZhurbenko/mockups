@@ -36,7 +36,20 @@ const handleCloseModal = () => {
   <div class="max-w-7xl mx-auto space-y-4 sm:space-y-6">
     <!-- Секция календаря -->
     <div>
-      <h2 class="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">Календарь</h2>
+      <div class="flex items-center justify-between mb-3 sm:mb-4">
+        <h2 class="text-lg sm:text-xl font-semibold text-gray-900">Календарь</h2>
+        <!-- Легенда -->
+        <div class="flex items-center gap-3 sm:gap-4">
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-500" />
+            <span class="text-xs sm:text-sm text-gray-600">Тренировка</span>
+          </div>
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <span class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-purple-500" />
+            <span class="text-xs sm:text-sm text-gray-600">Игра</span>
+          </div>
+        </div>
+      </div>
       <div class="bg-white rounded shadow p-3 sm:p-6">
         <CalendarHeader :month-name="monthName" />
         <CalendarGrid

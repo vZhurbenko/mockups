@@ -120,7 +120,10 @@ const formatTime = (dateStr) => {
     </div>
 
     <!-- Mobile: индикаторы событий -->
-    <div v-else-if="dayEvents.length > 0" class="absolute bottom-1.5 sm:bottom-2 left-1.5 sm:left-2 flex gap-0.5 sm:gap-1">
+    <div
+      v-if="dayEvents.length > 0"
+      class="md:hidden absolute bottom-1.5 sm:bottom-2 left-1.5 sm:left-2 flex gap-0.5 sm:gap-1"
+    >
       <span
         v-if="hasTraining"
         class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-green-500"
