@@ -93,7 +93,7 @@ const isPastDate = (date) => {
       <div
         v-for="day in groupedEvents"
         :key="day.date.toISOString()"
-        class="bg-white rounded shadow p-3 sm:p-4"
+        class="bg-white rounded shadow border border-gray-100 p-3 sm:p-4"
       >
         <!-- Заголовок дня -->
         <div class="flex flex-wrap items-center justify-between gap-2 mb-3 pb-3 border-b border-gray-200">

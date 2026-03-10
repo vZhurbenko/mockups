@@ -91,7 +91,7 @@ const handleCloseAddEventModal = () => {
           class="flex-1 px-4 py-3 text-sm font-medium transition-colors"
           :class="[
             activeTab === 'calendar'
-              ? 'text-primary-600 border-b-2 border-primary-600 bg-primary-50'
+              ? 'text-primary-700 border-b-2 border-primary-600 bg-primary-100'
               : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
           ]"
         >
@@ -102,7 +102,7 @@ const handleCloseAddEventModal = () => {
           class="flex-1 px-4 py-3 text-sm font-medium transition-colors"
           :class="[
             activeTab === 'events'
-              ? 'text-primary-600 border-b-2 border-primary-600 bg-primary-50'
+              ? 'text-primary-700 border-b-2 border-primary-600 bg-primary-100'
               : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
           ]"
         >
