@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from "vue";
-import { X, MapPin, Clock, Users, Trophy, Dumbbell } from "lucide-vue-next";
+import { X, MapPin, Clock, Users, Trophy, Dumbbell, Plus } from "lucide-vue-next";
 import { useTrainingCalendarStore } from "@/stores/trainingCalendar";
 import EventParticipants from "./EventParticipants.vue";
 
@@ -19,7 +19,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["close"]);
+const emit = defineEmits(["close", "add-event"]);
 
 const store = useTrainingCalendarStore();
 
@@ -91,15 +91,30 @@ const formatTime = (dateStr) => {
           >
             <!-- Заголовок -->
             <div class="flex items-center justify-between p-4 border-b border-gray-200">
-              <h3 class="text-lg font-semibold text-gray-900 capitalize">
-                {{ formattedDate }}
-              </h3>
-              <button
-                @click="handleClose"
-                class="p-1 rounded-lg hover:bg-gray-100 transition-colors"
-              >
-                <X class="w-5 h-5 text-gray-500" />
-              </button>
+              <div>
+                <h3 class="text-lg font-semibold text-gray-900 capitalize">
+                  {{ formattedDate }}
+                </h3>
+                <p v-if="events.length > 0" class="text-xs text-gray-500 mt-0.5">
+                  {{ events.length }} {{ events.length === 1 ? 'событие' : events.length < 5 ? 'события' : 'событий' }}
+                </p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button
+                  v-if="!isPastDate"
+                  @click="$emit('add-event', date)"
+                  class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-primary-600 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors"
+                >
+                  <Plus class="w-4 h-4" />
+                  Добавить
+                </button>
+                <button
+                  @click="handleClose"
+                  class="p-1 rounded-lg hover:bg-gray-100 transition-colors"
+                >
+                  <X class="w-5 h-5 text-gray-500" />
+                </button>
+              </div>
             </div>
 
             <!-- Контент -->

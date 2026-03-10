@@ -5,11 +5,13 @@ import CalendarHeader from "@/components/training-calendar/CalendarHeader.vue";
 import CalendarGrid from "@/components/training-calendar/CalendarGrid.vue";
 import EventsPanel from "@/components/training-calendar/EventsPanel.vue";
 import DayModal from "@/components/training-calendar/DayModal.vue";
+import AddEventModal from "@/components/training-calendar/AddEventModal.vue";
 
 const store = useTrainingCalendarStore();
 
 const selectedDate = ref(null);
 const isDayModalOpen = ref(false);
+const isAddEventModalOpen = ref(false);
 
 const monthName = computed(() => {
   return new Intl.DateTimeFormat("ru-RU", { month: "long", year: "numeric" }).format(
@@ -33,9 +35,47 @@ const handleDayClick = (date) => {
   isDayModalOpen.value = true;
 };
 
-const handleCloseModal = () => {
+const handleCloseDayModal = () => {
   isDayModalOpen.value = false;
   selectedDate.value = null;
+};
+
+const handleOpenAddEvent = (date) => {
+  selectedDate.value = date;
+  isAddEventModalOpen.value = true;
+};
+
+const handleAddEvent = (eventData) => {
+  // Создаём новое событие
+  const newEvent = {
+    id: store.events.length + 1,
+    type: eventData.type,
+    title: eventData.title,
+    date: new Date(
+      eventData.date.getFullYear(),
+      eventData.date.getMonth(),
+      eventData.date.getDate(),
+      ...eventData.startTime.split(':').map(Number)
+    ),
+    endTime: new Date(
+      eventData.date.getFullYear(),
+      eventData.date.getMonth(),
+      eventData.date.getDate(),
+      ...eventData.endTime.split(':').map(Number)
+    ),
+    location: eventData.location,
+    address: eventData.address,
+    participants: [],
+    maxParticipants: eventData.maxParticipants,
+    description: eventData.description,
+  };
+
+  store.events.push(newEvent);
+  store.events = [...store.events];
+};
+
+const handleCloseAddEventModal = () => {
+  isAddEventModalOpen.value = false;
 };
 </script>
 
@@ -78,6 +118,16 @@ const handleCloseModal = () => {
     :date="selectedDate"
     :events="getEventsForDate(selectedDate)"
     :is-open="isDayModalOpen"
-    @close="handleCloseModal"
+    @close="handleCloseDayModal"
+    @add-event="handleOpenAddEvent"
+  />
+
+  <!-- Модалка добавления события -->
+  <AddEventModal
+    v-if="selectedDate"
+    :date="selectedDate"
+    :is-open="isAddEventModalOpen"
+    @close="handleCloseAddEventModal"
+    @add="handleAddEvent"
   />
 </template>
