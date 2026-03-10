@@ -1,4 +1,5 @@
 <script setup>
+import { computed, ref } from "vue";
 import { ChevronDown, ChevronRight } from "lucide-vue-next";
 
 const props = defineProps({
@@ -10,10 +11,37 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  inline: {
+    type: Boolean,
+    default: false,
+  },
 });
+
+const localExpanded = ref(false);
+
+const isExpanded = computed(() => props.inline ? localExpanded.value : props.isExpanded);
 </script>
 
 <template>
+  <div v-if="inline">
+    <button
+      @click="localExpanded = !localExpanded"
+      class="flex items-center gap-1 hover:text-gray-900 transition-colors"
+    >
+      <span>
+        {{ event.participants.length }} / {{ event.maxParticipants }} участников
+      </span>
+      <ChevronDown
+        v-if="localExpanded"
+        class="w-4 h-4"
+      />
+      <ChevronRight
+        v-else
+        class="w-4 h-4"
+      />
+    </button>
+  </div>
+
   <div v-if="isExpanded" class="mt-3 p-3 bg-slate-50 rounded-lg">
     <div class="space-y-2">
       <div

@@ -4,12 +4,12 @@ import { useTrainingCalendarStore } from "@/stores/trainingCalendar";
 import CalendarHeader from "@/components/training-calendar/CalendarHeader.vue";
 import CalendarGrid from "@/components/training-calendar/CalendarGrid.vue";
 import EventsPanel from "@/components/training-calendar/EventsPanel.vue";
-import EventModal from "@/components/training-calendar/EventModal.vue";
+import DayModal from "@/components/training-calendar/DayModal.vue";
 
 const store = useTrainingCalendarStore();
 
-const selectedEvent = ref(null);
-const isModalOpen = ref(false);
+const selectedDate = ref(null);
+const isDayModalOpen = ref(false);
 
 const monthName = computed(() => {
   return new Intl.DateTimeFormat("ru-RU", { month: "long", year: "numeric" }).format(
@@ -17,18 +17,25 @@ const monthName = computed(() => {
   );
 });
 
-const handleDayClick = (date) => {
-  store.selectDate(date);
+const getEventsForDate = (date) => {
+  return store.events.filter((event) => {
+    const eventDate = new Date(event.date);
+    return (
+      eventDate.getDate() === date.getDate() &&
+      eventDate.getMonth() === date.getMonth() &&
+      eventDate.getFullYear() === date.getFullYear()
+    );
+  });
 };
 
-const handleEventClick = (event) => {
-  selectedEvent.value = event;
-  isModalOpen.value = true;
+const handleDayClick = (date) => {
+  selectedDate.value = date;
+  isDayModalOpen.value = true;
 };
 
 const handleCloseModal = () => {
-  isModalOpen.value = false;
-  selectedEvent.value = null;
+  isDayModalOpen.value = false;
+  selectedDate.value = null;
 };
 </script>
 
@@ -54,7 +61,6 @@ const handleCloseModal = () => {
         <CalendarHeader :month-name="monthName" />
         <CalendarGrid
           @day-click="handleDayClick"
-          @event-click="handleEventClick"
         />
       </div>
     </div>
@@ -66,11 +72,12 @@ const handleCloseModal = () => {
     </div>
   </div>
 
-  <!-- Модалка события (только desktop) -->
-  <EventModal
-    v-if="selectedEvent"
-    :event="selectedEvent"
-    :is-open="isModalOpen"
+  <!-- Модалка дня -->
+  <DayModal
+    v-if="selectedDate"
+    :date="selectedDate"
+    :events="getEventsForDate(selectedDate)"
+    :is-open="isDayModalOpen"
     @close="handleCloseModal"
   />
 </template>
