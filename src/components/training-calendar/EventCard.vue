@@ -33,6 +33,10 @@ const waitlistCount = computed(() => {
   return props.event.participants.filter((p) => p.isWaitlist).length;
 });
 
+const totalParticipants = computed(() => {
+  return mainParticipantsCount.value + waitlistCount.value;
+});
+
 const spotsLeft = computed(() => {
   return props.event.maxParticipants - mainParticipantsCount.value;
 });
@@ -97,7 +101,7 @@ const handleToggleParticipation = () => {
               class="flex items-center gap-1 hover:text-gray-900 transition-colors"
             >
               <span>
-                {{ mainParticipantsCount }} / {{ event.maxParticipants }} участников
+                {{ totalParticipants }} / {{ event.maxParticipants }} участников
                 <span v-if="spotsLeft > 0 && !isPastDate" class="text-green-600">
                   (свободно: {{ spotsLeft }})
                 </span>

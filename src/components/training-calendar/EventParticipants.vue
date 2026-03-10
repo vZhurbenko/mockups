@@ -28,6 +28,10 @@ const mainParticipants = computed(() => {
 const waitlistParticipants = computed(() => {
   return props.event.participants.filter((p) => p.isWaitlist);
 });
+
+const totalParticipants = computed(() => {
+  return mainParticipants.value.length + waitlistParticipants.value.length;
+});
 </script>
 
 <template>
@@ -37,7 +41,7 @@ const waitlistParticipants = computed(() => {
       class="flex items-center gap-1 hover:text-gray-900 transition-colors"
     >
       <span>
-        {{ mainParticipants.length }} / {{ event.maxParticipants }} участников
+        {{ totalParticipants }} / {{ event.maxParticipants }} участников
         <span v-if="waitlistParticipants.length > 0" class="text-amber-600">
           (в резерве: {{ waitlistParticipants.length }})
         </span>
