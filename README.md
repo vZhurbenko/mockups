@@ -1,6 +1,26 @@
-# Vue 3 Starter Template
+# Weekend Request BX24 — Проект мок-апов UI
 
-Современный универсальный шаблон проекта на **Vue 3** + **Vite** с полным набором инструментов для разработки.
+**Коллекция UI мок-апов** для демонстрации архитектурных подходов и UX-паттернов при построении интерфейсов.
+
+> ⚠️ **Важно:** Этот проект — **не готовое решение**, а набор мок-апов для демонстрации принципов построения UI. Дизайн (цвета, оформление) и логика могут отличаться в реальных приложениях.
+
+---
+
+## 📋 О проекте
+
+Этот проект создан на базе **Vue 3 Starter Template** и используется для:
+- Быстрого прототипирования UI-компонентов
+- Демонстрации UX-паттернов
+- Тестирования архитектурных решений
+- Создания визуальных концепций
+
+### **Текущие мок-апы**
+
+| Мок-ап | Описание | Путь |
+|--------|----------|------|
+| 🗓️ **Календарь тренировок** | Календарь событий с записью участников, waitlist, группировкой по дням | `/training-calendar` |
+| 📄 **Заявка на выходные** (legacy) | Форма заявки на работу в выходные дни | `/weekend-request` |
+| ✅ **Сводный отчёт** (legacy) | Страница согласования заявок руководителем | `/approval` |
 
 ---
 
@@ -70,7 +90,7 @@ npm run format
 
 | Библиотека | Назначение |
 |------------|------------|
-| `@vueuse/core` | 200+ композируемых утилит (useMouse, useLocalStorage, useFetch...) |
+| `@vueuse/core` | 200+ композируемых утилит |
 | `@vueuse/motion` | Анимации |
 | `axios` | HTTP-запросы |
 | `lodash-es` | Полезные функции |
@@ -99,9 +119,15 @@ project/
 │   ├── router/
 │   │   └── index.js         # Маршруты
 │   ├── stores/
-│   │   └── counter.js       # Pinia store (пример)
-│   └── __tests__/
-│       └── App.spec.js      # Тесты
+│   │   ├── counter.js       # Pinia store (пример)
+│   │   └── trainingCalendar.js  # Мок-ап календаря
+│   ├── components/
+│   │   └── training-calendar/   # Компоненты календаря
+│   └── views/
+│       └── TrainingCalendar.vue # Вьюха календаря
+├── tasks/
+│   └── training-calendar-mockup/
+│       └── README.md        # Документация мок-апа
 ├── public/                  # Статические файлы
 ├── index.html               # HTML-шаблон
 ├── vite.config.js           # Конфигурация Vite
@@ -114,12 +140,60 @@ project/
 
 ---
 
+## 🗓️ Мок-ап: Календарь тренировок
+
+### **Основная концепция**
+
+Двухуровневая навигация через табы:
+- **Календарь** — сетка месяца с событиями
+- **События месяца** — список всех событий с группировкой по дням
+
+### **Ключевые особенности**
+
+1. **Двухколоночная карточка события**
+   - Левая колонка: информация (название, время, место, участники)
+   - Правая колонка: бейдж типа + кнопка действия
+
+2. **Waitlist (резервный список)**
+   - При превышении лимита участники попадают в резерв
+   - Отображение: "3 / 10 участников (в резерве: 1)"
+
+3. **Модалка дня**
+   - Клик на день → модалка со всеми событиями
+   - Кнопка "Добавить событие" для будущих дат
+
+4. **Фильтр событий**
+   - Сегментированный контроль: "Все события" / "Предстоящие"
+   - Прошедшие события помечены бейджиком "Завершено"
+
+5. **Адаптивность**
+   - Desktop: краткое описание в ячейках календаря
+   - Mobile: точки-индикаторы + панель событий снизу
+
+### **Структура компонентов**
+
+```
+src/components/training-calendar/
+├── CalendarHeader.vue     # Заголовок с навигацией
+├── CalendarGrid.vue       # Сетка календаря
+├── CalendarDay.vue        # Ячейка дня
+├── EventsPanel.vue        # Список событий
+├── EventCard.vue          # Карточка события
+├── EventParticipants.vue  # Участники события
+├── DayModal.vue           # Модалка дня
+└── AddEventModal.vue      # Модалка добавления
+```
+
+📖 **Подробная документация:** [`tasks/training-calendar-mockup/README.md`](tasks/training-calendar-mockup/README.md)
+
+---
+
 ## 🔧 Настройки
 
 ### **Path Aliases**
 
 ```js
-import { useCounterStore } from "@/stores/counter";
+import { useTrainingCalendarStore } from "@/stores/trainingCalendar";
 ```
 
 Настроено в `vite.config.js` и `jsconfig.json`:
@@ -138,203 +212,18 @@ export default defineConfig({
 });
 ```
 
-### **Компоненты Vue**
+### **Кастомная тема**
 
-Рекомендуемый синтаксис:
+Синяя цветовая палитра в `src/styles/theme.css`:
 
-```vue
-<script setup>
-import { ref, computed } from "vue";
-import { useCounterStore } from "@/stores/counter";
-
-const count = ref(0);
-const store = useCounterStore();
-</script>
-
-<template>
-  <h1>{{ count }}</h1>
-</template>
-
-<style scoped>
-/* scoped стили */
-</style>
-```
-
----
-
-## 📚 Примеры использования
-
-### **Иконки (Lucide)**
-
-```vue
-<script setup>
-import { Camera, Home, User } from 'lucide-vue-next';
-</script>
-
-<template>
-  <Camera :size="24" :color="'#333'" />
-  <Home :size="32" />
-  <User :stroke-width="1.5" />
-</template>
-```
-
-### **Графики (Chart.js)**
-
-```vue
-<script setup>
-import { ref } from 'vue';
-import { Line } from 'vue-chartjs';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-} from 'chart.js';
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
-
-const chartData = ref({
-  labels: ['Январь', 'Февраль', 'Март'],
-  datasets: [{
-    label: 'Продажи',
-    data: [10, 20, 30]
-  }]
-});
-</script>
-
-<template>
-  <Line :data="chartData" />
-</template>
-```
-
-### **Таблицы (@tanstack/vue-table)**
-
-```vue
-<script setup>
-import {
-  createColumnHelper,
-  FlexRender,
-  getCoreRowModel,
-  useVueTable
-} from '@tanstack/vue-table';
-
-const columnHelper = createColumnHelper();
-
-const columns = [
-  columnHelper.accessor('name', {
-    header: 'Имя',
-  }),
-  columnHelper.accessor('email', {
-    header: 'Email',
-  })
-];
-
-const data = ref([
-  { name: 'Иван', email: 'ivan@example.com' },
-  { name: 'Мария', email: 'maria@example.com' }
-]);
-
-const table = useVueTable({
-  data,
-  columns,
-  getCoreRowModel: getCoreRowModel()
-});
-</script>
-
-<template>
-  <table>
-    <thead>
-      <tr v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
-        <th v-for="header in headerGroup.headers" :key="header.id">
-          <FlexRender :render="header.column.columnDef.header" :props="header.getContext()" />
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="row in table.getRowModel().rows" :key="row.id">
-        <td v-for="cell in row.getVisibleCells()" :key="cell.id">
-          <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</template>
-```
-
-### **Календарь (@fullcalendar/vue3)**
-
-```vue
-<script setup>
-import { ref } from 'vue';
-import FullCalendar from '@fullcalendar/vue3';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPlugin from '@fullcalendar/interaction';
-
-const calendarOptions = ref({
-  plugins: [dayGridPlugin, interactionPlugin],
-  initialView: 'dayGridMonth',
-  events: [
-    { title: 'Событие 1', date: '2026-03-01' },
-    { title: 'Событие 2', date: '2026-03-15' }
-  ]
-});
-</script>
-
-<template>
-  <FullCalendar :options="calendarOptions" />
-</template>
-```
-
-### **Уведомления (vue-sonner)**
-
-```vue
-<script setup>
-import { Toaster, toast } from 'vue-sonner';
-
-const showSuccess = () => {
-  toast.success('Успешно сохранено!');
-};
-
-const showError = () => {
-  toast.error('Произошла ошибка');
-};
-</script>
-
-<template>
-  <Toaster />
-  <button @click="showSuccess">Показать успех</button>
-  <button @click="showError">Показать ошибку</button>
-</template>
-```
-
-### **@vueuse/core**
-
-```vue
-<script setup>
-import { useMouse, useLocalStorage, useFetch } from '@vueuse/core';
-
-const { x, y } = useMouse();
-const state = useLocalStorage('my-key', 'default');
-const { data, error } = useFetch('/api/data').json();
-</script>
-
-<template>
-  <p>Мышь: {{ x }}, {{ y }}</p>
-  <p>LocalStorage: {{ state }}</p>
-  <pre>{{ data }}</pre>
-</template>
+```css
+@theme inline {
+  --color-primary-50: #f0f7fb;
+  --color-primary-100: #cce4f5;
+  --color-primary-500: #025ea1;
+  --color-primary-600: #024a80;
+  --color-primary-700: #01365c;
+}
 ```
 
 ---
@@ -360,51 +249,9 @@ import App from '../App.vue';
 describe('App', () => {
   it('renders correctly', () => {
     const wrapper = mount(App);
-    expect(wrapper.text()).toContain('You did it!');
+    expect(wrapper.text()).toContain('Календарь тренировок');
   });
 });
-```
-
----
-
-## 🎯 Рекомендации
-
-### **State Management (Pinia)**
-
-```js
-// stores/counter.js
-import { ref, computed } from "vue";
-import { defineStore } from "pinia";
-
-export const useCounterStore = defineStore("counter", () => {
-  const count = ref(0);
-  const double = computed(() => count.value * 2);
-
-  function increment() {
-    count.value++;
-  }
-
-  return { count, double, increment };
-});
-```
-
-### **Маршруты (Vue Router)**
-
-```js
-// router/index.js
-import { createRouter, createWebHistory } from "vue-router";
-
-const routes = [
-  { path: "/", component: () => import("@/views/Home.vue") },
-  { path: "/about", component: () => import("@/views/About.vue") }
-];
-
-const router = createRouter({
-  history: createWebHistory(),
-  routes
-});
-
-export default router;
 ```
 
 ---
@@ -419,6 +266,54 @@ export default router;
 | `npm run test:unit` | Запуск тестов |
 | `npm run lint` | Линтинг (oxlint + ESLint) |
 | `npm run format` | Форматирование (oxfmt) |
+
+---
+
+## 🎯 Рекомендации по разработке
+
+### **Создание нового мок-апа**
+
+1. Создать ветку: `git checkout -b feature/new-mockup`
+2. Создать структуру:
+   ```
+   src/views/NewMockup.vue
+   src/components/new-mockup/
+   src/stores/newMockup.js
+   ```
+3. Добавить маршрут в `src/router/index.js`
+4. Задокументировать в `tasks/new-mockup/README.md`
+
+### **State Management (Pinia)**
+
+```js
+// stores/newMockup.js
+import { ref, computed } from "vue";
+import { defineStore } from "pinia";
+
+export const useNewMockupStore = defineStore("newMockup", () => {
+  const items = ref([]);
+  const filtered = computed(() => items.value.filter(i => i.active));
+
+  function addItem(item) {
+    items.value.push(item);
+  }
+
+  return { items, filtered, addItem };
+});
+```
+
+### **Маршруты (Vue Router)**
+
+```js
+// router/index.js
+const routes = [
+  {
+    path: "/new-mockup",
+    name: "new-mockup",
+    component: () => import("@/views/NewMockup.vue"),
+  },
+];
+```
 
 ---
 
