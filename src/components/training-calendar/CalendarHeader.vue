@@ -32,11 +32,24 @@ const store = useTrainingCalendarStore();
         <ChevronRight class="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
       </button>
     </div>
-    <button
-      @click="store.goToToday"
-      class="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-primary-600 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors whitespace-nowrap"
-    >
-      Сегодня
-    </button>
+    <div class="flex items-center gap-3 sm:gap-4">
+      <!-- Легенда -->
+      <div class="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
+        <span class="flex items-center gap-1">
+          <span class="w-2.5 h-2.5 rounded-full bg-green-500"></span>
+          <span class="hidden sm:inline">Тренировка</span>
+        </span>
+        <span class="flex items-center gap-1">
+          <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+          <span class="hidden sm:inline">Игра</span>
+        </span>
+      </div>
+      <button
+        @click="store.goToToday"
+        class="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-primary-600 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors whitespace-nowrap"
+      >
+        Сегодня
+      </button>
+    </div>
   </div>
 </template>
